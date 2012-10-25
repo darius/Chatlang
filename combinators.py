@@ -67,34 +67,66 @@ class Optional(Parser):
 		else:
 			return None, pos
 
-class BinOp(Parser):
-	def __init__(self, op, left_op, right_op=None):
-		self.sequence = Sequence(op, left_op, right_op or left_op)
+class Process(Parser):
+	def __init__(self, parser, function):
+		self.parser = parser
+		self.fn = function
 
 	def __call__(self, tokens, pos):
-		result = self.sequence(tokens, pos)
+		result = self.parser(tokens, pos)
 		if result:
-			(left, op, right), new_pos = result
-			return (op, left, right), new_pos
+			ast, pos = result
+			new_ast = self.fn(ast)
+			result = new_ast, pos
+			return result
 		else:
 			return None
 
-class Conditional(Parser):
-	def __init__(self):
-		exp = Exp()
-		self.sequence = Sequence(
-							Reserved("if", "RESERVED"),
-							Reserved("(", "RESERVED"),
-							exp,
-							Reserved(")", "RESERVED"),
-							Reserved(":", "RESERVED"),
-							exp,
-							Optional(Sequence(
-										Reserved("else", "RESERVED"),
-										Reserved(":", "RESERVED"),
-										exp)))
+class Lazy(Parser):
+	def __init__(self, parser_function):
+		self.parser = None
+		self.fn = parser_function
+
+	def __call__(self, tokens, pos):
+		if not self.parser:
+			self.parser = self.fn()
+		return self.parser(tokens, pos)
+
+class All(Parser):
+	def __init__(self, parser):
+		self.parser = parser
+
+	def __call__(self, tokens, pos):
+		result = self.parser(tokens,pos)
+		if result and pos == len(tokens):
+			return result
+		else:
+			return None
+
+class Exp(Parser):
+	def __init__(self, parser, separator):
+		self.parser = parser
+		self.separator = separator
+	
+	def __call__(self, tokens, pos):
+		result = self.parser(tokens, pos)
+		if result:
+			ast, pos = result
+		else
+			return None
+		def process_next(parsed):
+			sep_func, exp = parsed
+			return sep_fun(ast, exp)
+		next_parser = Process(Sequence(self.separator, self.parser), process_next)
+		next_result = result
+
+		while next_result:
+			next_result = next_parser(tokens, result.pos)
+			if next_result:
+				result = next_result
+		return next_result
 	
 if __name__ == "__main__":
 	b = Reserved("if", "RESERVED")
-	print b([("if", "RESERVED")], 1)
+	print b([("if", "RESERVED")], 0)
 	print b([("foo", "RESERVED")], 0)

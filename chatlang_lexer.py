@@ -20,6 +20,7 @@ token_regex_list = [
     (r'<=', RESERVED),
     (r'>', RESERVED),
     (r'>=', RESERVED),
+	(r'==', RESERVED),
     (r'=', RESERVED),
     (r'!=', RESERVED),
     (r'and', RESERVED),
