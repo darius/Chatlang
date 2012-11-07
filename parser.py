@@ -90,11 +90,11 @@ def a_exp_group():
 					reserved_word(")")), process)
 
 def b_exp():
-    def process(op):
+    def process((op, _)):
 		if op=="and":
-			return lambda left, right : AndExp(op, left, right)
+			return lambda left, right : AndExp(left, right)
 		elif op=="or":
-			return lambda left, right : OrExp(op, left, right)
+			return lambda left, right : OrExp(left, right)
 		else:
 			raise RuntimeError('unknown logic operator: ' + op)
     def operator_precedence(ops):

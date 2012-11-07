@@ -6,3 +6,7 @@ end;
 finish := 0;
 if var2 > 0 :
 	finish := 1
+else :
+	finish := 0;
+if var1 > 0 or var2 > 0 :
+	finish := 2
