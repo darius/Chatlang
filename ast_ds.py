@@ -9,17 +9,17 @@ class IntExp(ArithmeticExp):
 		return self.i
 
 class VarExp(ArithmeticExp):
-	def __init__(self, x):
+	def __init__(self, (x, _)):
 		self.x = x
 
 	def eval(self, env):
-		if self.name in env:
-			return env[self.name]
-		else
+		if self.x in env:
+			return env[self.x]
+		else:
 			return 0
 
 class BinopExp(ArithmeticExp):
-	def __init__(self, op, left, right):
+	def __init__(self, (op, _), left, right):
 		self.op = op
 		self.left = left
 		self.right = right
@@ -27,43 +27,43 @@ class BinopExp(ArithmeticExp):
 	def eval(self, env):
 		left_val = self.left.eval(env)
 		right_val = self.right.eval(env)
-		if self.op == '+'
+		if self.op == '+':
 			return left_val + right_val
-		elif self.op == '-'
+		elif self.op == '-':
 			return left_val - right_val
-		elif self.op == '*'
+		elif self.op == '*':
 			return left_val * right_val
-		elif self.op == '/'
+		elif self.op == '/':
 			return left_val / right_val
-		else
-			raise Excpetion('Unknown operator' + self.op)
+		else:
+			raise Exception('Unknown operator' + self.op)
 
 class BooleanExp:
 	pass
 
 class RelExp(BooleanExp):
-	def __init__(self, op, left, right):
+	def __init__(self, (op, _), left, right):
 		self.op = op
-        self.left = left
-        self.right = right
+		self.left = left
+		self.right = right
 
 	def eval(self, env):
 		left_val = self.left.eval(env)
-        right_val = self.right.eval(env)
-        if self.op == '<'
-            return left_val < right_val
-        elif self.op == '>'
-            return left_val > right_val
-        elif self.op == '<='
-            return left_val <= right_val
-        elif self.op == '>='
-            return left_val >= right_val
-		elif self.op == '=='
+		right_val = self.right.eval(env)
+		if self.op == '<':
+			return left_val < right_val
+		elif self.op == '>':
+			return left_val > right_val
+		elif self.op == '<=':
+			return left_val <= right_val
+		elif self.op == '>=':
+			return left_val >= right_val
+		elif self.op == '==':
 			return left_val == right_val
-		elif self.op == '!='
+		elif self.op == '!=':
 			return left_val != right_val
-        else
-            raise Excpetion('Unknown operator' + self.op)
+		else:
+			raise Exception('Unknown operator' + self.op)
 
 class AndExp(BooleanExp):
 	def __init__(self, left, right):
@@ -78,26 +78,26 @@ class AndExp(BooleanExp):
 class OrExp(BooleanExp):
 	def __init__(self, left, right):
 		self.left = left
-        self.right = right
+		self.right = right
 
-    def eval(self, env):
-        left_val = self.left.eval(env)
-        right_val = self.right.eval(env)
-        return left_val or right_val
+	def eval(self, env):
+		left_val = self.left.eval(env)
+		right_val = self.right.eval(env)
+		return left_val or right_val
 
 class NotExp(BooleanExp):
 	def __init__(self, exp):
-        self.exp = exp
+		self.exp = exp
 
-    def eval(self, env):
+	def eval(self, env):
 		val = self.exp.eval(env)
-        return not val
+		return not val
 
 class Statement:
 	pass
 
 class AssignmentStatement(Statement):
-	def __init__(self, name, val):
+	def __init__(self, (name, _), val):
 		self.name = name
 		self.val = val
 
@@ -116,7 +116,7 @@ class WhileStatement(Statement):
 			self.body.eval(env)
 			eval_cond = self.condition.eval(env)
 
-class IfThenElseStatement(Statement):
+class IfStatement(Statement):
 	def __init__(self, condition, true_body, false_body):
 		self.condition = condition
 		self.true_body = true_body

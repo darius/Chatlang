@@ -1,3 +1,5 @@
+import pdb;
+
 class Parser:
 	pass
 
@@ -6,7 +8,7 @@ class Reserved(Parser):
 		self.name = name
 		self.tag = tag
 
-	def __call__(self, tokens, pos):
+	def __call__(self, tokens, pos):	
 		if pos < len(tokens):
 			token = tokens[pos]
 			name, tag = token
@@ -14,8 +16,6 @@ class Reserved(Parser):
 				return (token, pos+1)
 			else:
 				return None
-		else:
-			raise Exception("Unexpected eof")
 
 class Tag(Parser):
 	def __init__(self, tag):
@@ -26,16 +26,14 @@ class Tag(Parser):
 			token = tokens[pos]
 			_, tag = token
 			return (token, pos+1) if tag is self.tag else None
-		else:
-			raise Exception("Unexpected eof")
 
 class Sequence(Parser):
 	def __init__(self, *parsers):
 		self.parsers = parsers
 
 	def __call__(self, tokens, pos):
-		cur_pos = pos
 		values = []
+		cur_pos = pos
 		for parser in self.parsers:
 			result = parser(tokens, cur_pos)
 			if result:
@@ -43,7 +41,7 @@ class Sequence(Parser):
 				values.append(ast)
 			else:
 				return None
-		return tuple(values), pos
+		return tuple(values), cur_pos
 
 class Or(Parser):
 	def __init__(self, *parsers):
@@ -98,6 +96,7 @@ class All(Parser):
 
 	def __call__(self, tokens, pos):
 		result = self.parser(tokens,pos)
+		ast, pos = result
 		if result and pos == len(tokens):
 			return result
 		else:
@@ -112,19 +111,20 @@ class Exp(Parser):
 		result = self.parser(tokens, pos)
 		if result:
 			ast, pos = result
-		else
+		else:
 			return None
 		def process_next(parsed):
 			sep_func, exp = parsed
-			return sep_fun(ast, exp)
+			return sep_func(ast, exp)
 		next_parser = Process(Sequence(self.separator, self.parser), process_next)
 		next_result = result
 
 		while next_result:
-			next_result = next_parser(tokens, result.pos)
+			next_result = next_parser(tokens, pos)
 			if next_result:
 				result = next_result
-		return next_result
+				ast, pos = result
+		return result
 	
 if __name__ == "__main__":
 	b = Reserved("if", "RESERVED")
