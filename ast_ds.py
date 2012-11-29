@@ -68,9 +68,8 @@ class AndExp(BooleanExp):
         self.right = right
     
     def eval(self, env):
-        left_val = self.left.eval(env)
-        right_val = self.right.eval(env)
-        return left_val and right_val
+        return (self.left.eval(env)
+                and self.right.eval(env))
 
 class OrExp(BooleanExp):
     def __init__(self, left, right):
@@ -78,9 +77,8 @@ class OrExp(BooleanExp):
         self.right = right
 
     def eval(self, env):
-        left_val = self.left.eval(env)
-        right_val = self.right.eval(env)
-        return left_val or right_val
+        return (self.left.eval(env)
+                or self.right.eval(env))
 
 class NotExp(BooleanExp):
     def __init__(self, exp):
