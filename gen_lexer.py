@@ -17,8 +17,6 @@ def lexer (character_stream, token_regex_list):
                     tokens.append(token)
                 break
         if not match:
-            sys.stderr.write('Error! Invalid character: %s ' % characters[pos])
-            sys.exit(1)
-        else:
-            char_pos = match.end(0)
+            raise Exception("Invalid character", characters[pos])
+        char_pos = match.end(0)
     return tokens
