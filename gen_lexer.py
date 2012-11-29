@@ -16,7 +16,8 @@ def lexer (character_stream, token_regex_list):
                     token = (matched_text, tag)
                     tokens.append(token)
                 break
-        if not match:
-            raise Exception("Invalid character", characters[pos])
+        else:
+            raise Exception("Lexical error",
+                            character_stream[char_pos:].split()[0])
         char_pos = match.end(0)
     return tokens
