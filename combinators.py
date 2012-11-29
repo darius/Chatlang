@@ -25,7 +25,7 @@ class Tag(Parser):
         if pos < len(tokens):
             token = tokens[pos]
             _, tag = token
-            return (token, pos+1) if tag is self.tag else None
+            return (token, pos+1) if tag == self.tag else None
 
 class Sequence(Parser):
     def __init__(self, *parsers):
