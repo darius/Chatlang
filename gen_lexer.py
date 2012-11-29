@@ -5,7 +5,6 @@ def lexer(character_stream, token_regex_list):
     char_pos = 0
     compiled_regexes = [(re.compile(p), tag) for p, tag in token_regex_list]
     while char_pos < len(character_stream):
-        match = None
         for token_regex in compiled_regexes:
             regex, tag = token_regex
             match = regex.match(character_stream, char_pos)
