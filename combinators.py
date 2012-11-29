@@ -113,7 +113,7 @@ class All(Parser):
                 return result
         return None
 
-class Exp(Parser):
+class Chain(Parser):
     """Eat (parser (separator parser)*). separator should produce a
     function like (lambda left, right: left + right). The result
     produced is that function folded over the results from parser

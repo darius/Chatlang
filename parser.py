@@ -22,7 +22,7 @@ def parser():
 
 def statements():
     separator = Process(reserved_word(";"), lambda x: CompoundStatement)
-    return Exp(single_stmt(), separator)
+    return Chain(single_stmt(), separator)
 
 def single_stmt():
     return Or(assign_statement(), if_statement(), while_statement())
@@ -69,9 +69,9 @@ def a_exp():
         return lambda left, right: BinopExp(op, left, right)
     def operator_precedence(ops):
         return Process(reduce(Or, map(reserved_word, ops)), process)
-    parser = Exp(a_exp_term(), operator_precedence(arithmetic_precedence[0]))
+    parser = Chain(a_exp_term(), operator_precedence(arithmetic_precedence[0]))
     for precedence_op in arithmetic_precedence[1:]:
-        parser = Exp(parser, operator_precedence(precedence_op))
+        parser = Chain(parser, operator_precedence(precedence_op))
     return parser
 
 def a_exp_term():
@@ -100,9 +100,9 @@ def b_exp():
             assert False
     def operator_precedence(ops):
         return Process(reduce(Or, map(reserved_word, ops)), process)
-    parser = Exp(b_exp_term(), operator_precedence(boolean_precedence[0]))
+    parser = Chain(b_exp_term(), operator_precedence(boolean_precedence[0]))
     for precedence_op in boolean_precedence[1:]:
-        parser = Exp(parser, operator_precedence(precedence_op))
+        parser = Chain(parser, operator_precedence(precedence_op))
     return parser
 
 def b_exp_term():
