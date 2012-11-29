@@ -85,8 +85,7 @@ class NotExp(BooleanExp):
         self.exp = exp
 
     def eval(self, env):
-        val = self.exp.eval(env)
-        return not val
+        return not self.exp.eval(env)
 
 class Statement:
     pass
@@ -97,8 +96,7 @@ class AssignmentStatement(Statement):
         self.val = val
 
     def eval(self, env):
-        val = self.val.eval(env)
-        env[self.name] = val
+        env[self.name] = self.val.eval(env)
 
 class WhileStatement(Statement):
     def __init__(self, condition, body):
@@ -106,10 +104,8 @@ class WhileStatement(Statement):
         self.body = body
 
     def eval(self, env):
-        eval_cond = self.condition.eval(env)
-        while eval_cond:
+        while self.condition.eval(env):
             self.body.eval(env)
-            eval_cond = self.condition.eval(env)
 
 class IfStatement(Statement):
     def __init__(self, condition, true_body, false_body):
@@ -118,8 +114,7 @@ class IfStatement(Statement):
         self.false_body = false_body
 
     def eval(self, env):
-        eval_cond = self.condition.eval(env)
-        if eval_cond:
+        if self.condition.eval(env):
             self.true_body.eval(env)
         else:
             if self.false_body:
