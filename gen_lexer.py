@@ -1,7 +1,7 @@
 import sys
 import re
 
-def lexer (character_stream, token_regex_list):
+def lexer(character_stream, token_regex_list):
     tokens = []
     char_pos = 0
     compiled_regexes = [(re.compile(p), tag) for p, tag in token_regex_list]
