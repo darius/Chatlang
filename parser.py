@@ -78,7 +78,8 @@ def a_exp_term():
     return Or(a_exp_value(), a_exp_group())
 
 def a_exp_value():
-    return Or(Process(num, (lambda i: IntExp(i))), Process(var, (lambda a: VarExp(a))))
+    return Or(Process(num, IntExp),
+              Process(var, VarExp))
 
 def a_exp_group():
     def process(parsed):
