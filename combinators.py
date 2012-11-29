@@ -95,12 +95,12 @@ class All(Parser):
         self.parser = parser
 
     def __call__(self, tokens, pos):
-        result = self.parser(tokens,pos)
-        ast, pos = result
-        if result and pos == len(tokens):
-            return result
-        else:
-            return None
+        result = self.parser(tokens, pos)
+        if result:
+            ast, pos = result
+            if pos == len(tokens):
+                return result
+        return None
 
 class Exp(Parser):
     def __init__(self, parser, separator):
