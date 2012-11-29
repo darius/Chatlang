@@ -13,10 +13,7 @@ class VarExp(ArithmeticExp):
         self.x = x
 
     def eval(self, env):
-        if self.x in env:
-            return env[self.x]
-        else:
-            return 0
+        return env.get(self.x, 0)
 
 class BinopExp(ArithmeticExp):
     def __init__(self, (op, _), left, right):
