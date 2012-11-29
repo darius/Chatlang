@@ -9,7 +9,7 @@ def reserved_word(rw):
     return Reserved(rw, RESERVED)
 
 num = Process(Tag(INT), (lambda (i, _) : int(i)))
-id = Tag(ID)
+var = Tag(ID)
 
 def chatlang_parse(tokens):
     ast_parser = parser()
@@ -31,7 +31,7 @@ def assign_statement():
     def process(parsed):
         (name, _, exp) = parsed
         return AssignmentStatement(name, exp)
-    return Process(Sequence(id, reserved_word(":="), a_exp()), process)
+    return Process(Sequence(var, reserved_word(":="), a_exp()), process)
 
 def if_statement():
     def process(parsed):
@@ -78,7 +78,7 @@ def a_exp_term():
     return Or(a_exp_value(), a_exp_group())
 
 def a_exp_value():
-    return Or(Process(num, (lambda i: IntExp(i))), Process(id, (lambda a: VarExp(a))))
+    return Or(Process(num, (lambda i: IntExp(i))), Process(var, (lambda a: VarExp(a))))
 
 def a_exp_group():
     def process(parsed):
