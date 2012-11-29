@@ -97,7 +97,7 @@ def b_exp():
         elif op == "or":
             return OrExp
         else:
-            raise RuntimeError('unknown logic operator: ' + op)
+            assert False
     def operator_precedence(ops):
         return Process(reduce(Or, map(reserved_word, ops)), process)
     parser = Exp(b_exp_term(), operator_precedence(boolean_precedence[0]))
