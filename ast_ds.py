@@ -33,7 +33,7 @@ class BinopExp(ArithmeticExp):
         elif self.op == '/':
             return left_val / right_val
         else:
-            raise Exception('Unknown operator' + self.op)
+            raise Exception('Unknown operator', self.op)
 
 class BooleanExp:
     pass
@@ -60,7 +60,7 @@ class RelExp(BooleanExp):
         elif self.op == '!=':
             return left_val != right_val
         else:
-            raise Exception('Unknown operator' + self.op)
+            raise Exception('Unknown operator', self.op)
 
 class AndExp(BooleanExp):
     def __init__(self, left, right):
