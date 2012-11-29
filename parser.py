@@ -2,9 +2,6 @@ from chatlang_lexer import *
 from ast_ds import *
 from combinators import *
 
-arithmetic_precedence = [["*", "/"], ["+", "-"]]
-boolean_precedence = [["and"], ["or"]]
-
 def reserved_word(rw):
     return Reserved(rw, RESERVED)
 
@@ -74,6 +71,8 @@ def a_exp():
         parser = Chain(parser, operator_precedence(precedence_op))
     return parser
 
+arithmetic_precedence = [["*", "/"], ["+", "-"]]
+
 def a_exp_term():
     return Or(a_exp_value(), a_exp_group())
 
@@ -104,6 +103,8 @@ def b_exp():
     for precedence_op in boolean_precedence[1:]:
         parser = Chain(parser, operator_precedence(precedence_op))
     return parser
+
+boolean_precedence = [["and"], ["or"]]
 
 def b_exp_term():
     return Or(b_exp_not(), b_exp_relop(), b_exp_group())
