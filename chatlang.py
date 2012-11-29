@@ -16,4 +16,4 @@ if __name__ == "__main__":
     ast.eval(env)
 
     for name in env:
-        sys.stdout.write('%s: %s\n' % (name, env[name]))
+        print name+':', env[name]
