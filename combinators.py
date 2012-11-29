@@ -4,6 +4,7 @@ class Parser:
     pass
 
 class Reserved(Parser):
+    "Eat one token, that's equal to the given one."
     def __init__(self, name, tag):
         self.name = name
         self.tag = tag
@@ -18,6 +19,7 @@ class Reserved(Parser):
                 return None
 
 class Tag(Parser):
+    "Eat one token, that bears the given tag."
     def __init__(self, tag):
         self.tag = tag
 
@@ -28,6 +30,8 @@ class Tag(Parser):
             return (token, pos+1) if tag == self.tag else None
 
 class Sequence(Parser):
+    """Eat what the parsers eat in sequence, each taking up where the
+    last left off. Produce a tuple of all their results."""
     def __init__(self, *parsers):
         self.parsers = parsers
 
@@ -44,6 +48,7 @@ class Sequence(Parser):
         return tuple(values), cur_pos
 
 class Or(Parser):
+    "Act as the first of the parsers to succeed, trying them in order."
     def __init__(self, *parsers):
         self.parsers = parsers
 
@@ -55,6 +60,7 @@ class Or(Parser):
         return None
 
 class Optional(Parser):
+    "Always succeed, producing None if parser fails."
     def __init__(self, parser):
         self.parser = parser
 
@@ -66,6 +72,7 @@ class Optional(Parser):
             return None, pos
 
 class Process(Parser):
+    "Transform parser's result to function(result)."
     def __init__(self, parser, function):
         self.parser = parser
         self.fn = function
@@ -81,6 +88,9 @@ class Process(Parser):
             return None
 
 class Lazy(Parser):
+    """A parser equivalent to parser_function(), but we call that just
+    once, and not until we're first called to parse an input. (Use
+    this for recursive grammars.)"""
     def __init__(self, parser_function):
         self.parser = None
         self.fn = parser_function
@@ -91,6 +101,7 @@ class Lazy(Parser):
         return self.parser(tokens, pos)
 
 class All(Parser):
+    "Like parser, but succeeding only when it eats all of the input."
     def __init__(self, parser):
         self.parser = parser
 
@@ -103,6 +114,10 @@ class All(Parser):
         return None
 
 class Exp(Parser):
+    """Eat (parser (separator parser)*). separator should produce a
+    function like (lambda left, right: left + right). The result
+    produced is that function folded over the results from parser
+    (associating from left to right)."""
     def __init__(self, parser, separator):
         self.parser = parser
         self.separator = separator
