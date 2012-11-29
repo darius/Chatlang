@@ -120,14 +120,15 @@ def b_exp_relop():
         return RelExp(op, left, right)
     relops = ['<=', '<', '>=', '>', '==', '!=']
     return Process(Sequence(a_exp(), 
-                    reduce(lambda l, r: Or(l, r), [reserved_word(op) for op in relops]),
-                    a_exp()), process)
+                            reduce(Or, map(reserved_word, relops)),
+                            a_exp()),
+                   process)
 
 def b_exp_group():
     def process(parsed):
         (_, exp, _) = parsed
         return exp
-    return Process(Sequence(
-                    reserved_word('('),
-                    Lazy(b_exp),
-                    reserved_word(')')), process)
+    return Process(Sequence(reserved_word('('),
+                            Lazy(b_exp),
+                            reserved_word(')')),
+                   process)
