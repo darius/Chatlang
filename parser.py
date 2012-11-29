@@ -14,7 +14,7 @@ id = Tag(ID)
 def chatlang_parse(tokens):
     ast_parser = parser()
     #import pdb; pdb.set_trace();
-    ast = ast_parser(tokens, 0)
+    ast = ast_parser(list(tokens), 0)
     return ast
 
 def parser():
