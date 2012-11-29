@@ -8,11 +8,11 @@ def lexer (character_stream, token_regex_list):
     while char_pos < len(character_stream):
         match = None
         for token_regex in compiled_regexes:
-	    regex, tag =  token_regex
+            regex, tag =  token_regex
             #regex = re.compile(pattern)
             match = regex.match(character_stream, char_pos)
             if match:
-            	matched_text = match.group(0)
+                matched_text = match.group(0)
                 if tag:
                     token = (matched_text, tag)
                     tokens.append(token)
