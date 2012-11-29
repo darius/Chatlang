@@ -8,7 +8,8 @@ def lexer(character_stream, token_specifiers):
         for regex, tag in choices:
             match = regex.match(character_stream, pos)
             if match:
-                if tag: yield match.group(0), tag
+                if tag:
+                    yield match.group(0), tag
                 pos = match.end(0)
                 break
         else:
