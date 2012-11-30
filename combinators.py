@@ -108,9 +108,9 @@ class All(Parser):
 
 class Chain(Parser):
     """Eat (parser (separator parser)*). separator should produce a
-    function like (lambda left, right: left + right). The result
-    produced is that function folded over the results from parser
-    (associating from left to right)."""
+    function of two arguments, like (lambda left, right: left +
+    right). Produce, as the overall result, that function folded over
+    all the results from parser (associating from left to right)."""
     def __init__(self, parser, separator):
         self.parser = parser
         self.separator = separator
