@@ -1,17 +1,16 @@
 import re
 import gen_lexer
 
-RESERVED = 'RESERVED'
 INT      = 'INT'
 ID       = 'ID'
 
-reserved = ':= ( ) ; : + - * / <= < >= > == = !='
+punctuation = ':= ( ) ; : + - * / <= < >= > == = !='
 keywords = 'and or not if then else while do end'
 
 token_regex_list = (  [(r'\s+', None),
                        (r'#[^\n]*', None)]
-                    + [(re.escape(s), RESERVED) for s in reserved.split()]
-                    + [(s+r'\b', RESERVED) for s in keywords.split()]
+                    + [(re.escape(s), s) for s in punctuation.split()]
+                    + [(s+r'\b', s) for s in keywords.split()]
                     + [(r'\d+', INT),
                        (r'[A-Za-z][A-Za-z0-9_]*', ID)])
 

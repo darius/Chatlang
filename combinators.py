@@ -9,21 +9,6 @@ class Parser:
         parsed."""
         abstract
 
-class Reserved(Parser):
-    "Eat one token, that's equal to the given one."
-    def __init__(self, name, tag):
-        self.name = name
-        self.tag = tag
-
-    def __call__(self, tokens, pos):
-        if pos < len(tokens):
-            token = tokens[pos]
-            name, tag = token
-            if name == self.name and tag == self.tag:
-                return (token, pos+1)
-            else:
-                return None
-
 class Tag(Parser):
     "Eat one token, that bears the given tag."
     def __init__(self, tag):
@@ -146,8 +131,3 @@ class Chain(Parser):
                 result = next_result
                 ast, pos = result
         return result
-    
-if __name__ == "__main__":
-    b = Reserved("if", "RESERVED")
-    print b([("if", "RESERVED")], 0)
-    print b([("foo", "RESERVED")], 0)
