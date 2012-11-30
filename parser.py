@@ -81,9 +81,7 @@ def a_exp_group():
     def process(parsed):
         (_, exp, _) = parsed
         return exp
-    return Process(Sequence(Tag("("),
-                            Lazy(a_exp),
-                            Tag(")")),
+    return Process(Sequence(Tag("("), Lazy(a_exp), Tag(")")),
                    process)
 
 def b_exp():
@@ -127,7 +125,5 @@ def b_exp_group():
     def process(parsed):
         (_, exp, _) = parsed
         return exp
-    return Process(Sequence(Tag('('),
-                            Lazy(b_exp),
-                            Tag(')')),
+    return Process(Sequence(Tag('('), Lazy(b_exp), Tag(')')),
                    process)

@@ -18,7 +18,9 @@ class Tag(Parser):
         if pos < len(tokens):
             token = tokens[pos]
             _, tag = token
-            return (token, pos+1) if tag == self.tag else None
+            if tag == self.tag:
+                return (token, pos+1)
+        return None
 
 class Sequence(Parser):
     """Eat what the parsers eat in sequence, each taking up where the
