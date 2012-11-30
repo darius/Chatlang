@@ -1,7 +1,13 @@
 import pdb;
 
 class Parser:
-    pass
+    def __call__(self, tokens, pos):
+        """Given a token sequence and an index into it, try to parse a
+        subsequence starting there. On failure, return None; on
+        success, return (result, new_pos) where result is the parsed
+        value and new_pos points to the remainder after the text
+        parsed."""
+        abstract
 
 class Reserved(Parser):
     "Eat one token, that's equal to the given one."
