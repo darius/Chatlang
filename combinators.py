@@ -9,20 +9,18 @@ class Parser:
         text parsed."""
         abstract
 
-class Tag(Parser):
+# Just one example of making the code shorter using a higher-order
+# function instead of a class.
+def Tag(tag, produce=False):
     "Eat one token, that bears the given tag."
-    def __init__(self, tag, produce=False):
-        self.tag = tag
-        self.produce = produce
-
-    def __call__(self, tokens, pos):
+    def parse(tokens, pos):
         if pos < len(tokens):
-            token = tokens[pos]
-            text, tag = token
-            if tag == self.tag:
-                values = (text,) if self.produce else ()
+            text, token_tag = tokens[pos]
+            if token_tag == tag:
+                values = (text,) if produce else ()
                 return (values, pos+1)
         return None
+    return parse
 
 class Sequence(Parser):
     """Eat what the parsers eat in sequence, each taking up where the
@@ -81,18 +79,17 @@ class Process(Parser):
         else:
             return None
 
-class Lazy(Parser):
+# And another example, where it's trickier.
+def Lazy(parser_function):
     """A parser equivalent to parser_function(), but we call that just
     once, and not until we're first called to parse an input. (Use
     this for recursive grammars.)"""
-    def __init__(self, parser_function):
-        self.parser = None
-        self.fn = parser_function
-
-    def __call__(self, tokens, pos):
-        if not self.parser:
-            self.parser = self.fn()
-        return self.parser(tokens, pos)
+    def parse(tokens, pos):
+        if not parse.parser:
+            parse.parser = parser_function()
+        return parse.parser(tokens, pos)
+    parse.parser = None
+    return parse
 
 class All(Parser):
     "Like parser, but succeeding only when it eats all of the input."
