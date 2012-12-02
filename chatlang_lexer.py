@@ -1,8 +1,8 @@
 import re
 import gen_lexer
 
-INT      = 'INT'
-ID       = 'ID'
+INT = 'INT'
+ID  = 'ID'
 
 punctuation = ':= ( ) ; : + - * / <= < >= > == = !='
 keywords = 'and or not if then else while do end'
