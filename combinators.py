@@ -4,27 +4,29 @@ class Parser:
     def __call__(self, tokens, pos):
         """Given a token sequence and an index into it, try to parse a
         subsequence starting there. On failure, return None; on
-        success, return (result, new_pos) where result is the parsed
-        value and new_pos points to the remainder after the text
-        parsed."""
+        success, return (results, new_pos) where results is a tuple of
+        parsed values and new_pos points to the remainder after the
+        text parsed."""
         abstract
 
 class Tag(Parser):
     "Eat one token, that bears the given tag."
-    def __init__(self, tag):
+    def __init__(self, tag, produce=False):
         self.tag = tag
+        self.produce = produce
 
     def __call__(self, tokens, pos):
         if pos < len(tokens):
             token = tokens[pos]
-            _, tag = token
+            text, tag = token
             if tag == self.tag:
-                return (token, pos+1)
+                values = (text,) if self.produce else ()
+                return (values, pos+1)
         return None
 
 class Sequence(Parser):
     """Eat what the parsers eat in sequence, each taking up where the
-    last left off. Produce a tuple of all their results."""
+    last left off. Concatenate all their results."""
     def __init__(self, *parsers):
         self.parsers = parsers
 
@@ -34,8 +36,8 @@ class Sequence(Parser):
         for parser in self.parsers:
             result = parser(tokens, cur_pos)
             if result:
-                ast, cur_pos = result
-                values.append(ast)
+                asts, cur_pos = result
+                values.extend(asts)
             else:
                 return None
         return tuple(values), cur_pos
@@ -53,7 +55,7 @@ class Or(Parser):
         return None
 
 class Optional(Parser):
-    "Always succeed, producing None if parser fails."
+    "Always succeed, producing (None,) if parser fails."
     def __init__(self, parser):
         self.parser = parser
 
@@ -62,10 +64,10 @@ class Optional(Parser):
         if result:
             return result
         else:
-            return None, pos
+            return (None,), pos
 
 class Process(Parser):
-    "Transform parser's result to function(result)."
+    "Transform parser's results to (function(*results),)."
     def __init__(self, parser, function):
         self.parser = parser
         self.fn = function
@@ -73,10 +75,9 @@ class Process(Parser):
     def __call__(self, tokens, pos):
         result = self.parser(tokens, pos)
         if result:
-            ast, pos = result
-            new_ast = self.fn(ast)
-            result = new_ast, pos
-            return result
+            asts, pos = result
+            new_ast = self.fn(*asts)
+            return (new_ast,), pos
         else:
             return None
 
@@ -101,16 +102,17 @@ class All(Parser):
     def __call__(self, tokens, pos):
         result = self.parser(tokens, pos)
         if result:
-            ast, pos = result
+            _, pos = result
             if pos == len(tokens):
                 return result
         return None
 
 class Chain(Parser):
-    """Eat (parser (separator parser)*). separator should produce a
-    function of two arguments, like (lambda left, right: left +
-    right). Produce, as the overall result, that function folded over
-    all the results from parser (associating from left to right)."""
+    """Eat (parser (separator parser)*). parser should produce a
+    single result; separator should produce a function of two
+    arguments, like (lambda left, right: left + right). Produce, as
+    the overall result, that function folded over all the results from
+    parser (associating from left to right)."""
     def __init__(self, parser, separator):
         self.parser = parser
         self.separator = separator
@@ -118,18 +120,18 @@ class Chain(Parser):
     def __call__(self, tokens, pos):
         result = self.parser(tokens, pos)
         if result:
-            ast, pos = result
+            (ast,), pos = result
         else:
             return None
-        def process_next(parsed):
-            sep_func, exp = parsed
+        def process_next(sep_func, exp):
             return sep_func(ast, exp)
-        next_parser = Process(Sequence(self.separator, self.parser), process_next)
-        next_result = result
+        next_parser = Process(Sequence(self.separator, self.parser),
+                              process_next)
 
-        while next_result:
+        while True:
             next_result = next_parser(tokens, pos)
             if next_result:
                 result = next_result
-                ast, pos = result
-        return result
+                (ast,), pos = result
+            else:
+                return result

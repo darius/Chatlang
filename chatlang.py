@@ -10,7 +10,7 @@ if __name__ == "__main__":
     if not parsed:
         sys.stderr.write('Parse error!\n')
         sys.exit(1)
-    ast, pos = parsed
+    (ast,), pos = parsed
     env = {}
     #import pdb;pdb.set_trace();
     ast.eval(env)

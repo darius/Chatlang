@@ -9,14 +9,14 @@ class IntExp(ArithmeticExp):
         return self.i
 
 class VarExp(ArithmeticExp):
-    def __init__(self, (x, _)):
+    def __init__(self, x):
         self.x = x
 
     def eval(self, env):
         return env.get(self.x, 0)
 
 class BinopExp(ArithmeticExp):
-    def __init__(self, (op, _), left, right):
+    def __init__(self, op, left, right):
         self.op = op
         self.left = left
         self.right = right
@@ -39,7 +39,7 @@ class BooleanExp:
     pass
 
 class RelExp(BooleanExp):
-    def __init__(self, (op, _), left, right):
+    def __init__(self, op, left, right):
         self.op = op
         self.left = left
         self.right = right
@@ -91,7 +91,7 @@ class Statement:
     pass
 
 class AssignmentStatement(Statement):
-    def __init__(self, (name, _), val):
+    def __init__(self, name, val):
         self.name = name
         self.val = val
 
