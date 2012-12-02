@@ -3,9 +3,8 @@ from chatlang_lexer import *
 
 if __name__ == '__main__':
     filename = sys.argv[1]
-    file = open(filename)
-    characters = file.read()
-    file.close()
+    with open(filename) as f:
+        characters = f.read()
     tokens = chatlang_lexer(characters)
     for token in tokens:
         print token
