@@ -6,13 +6,10 @@ num = Process(Tag(INT, True), int)
 var = Tag(ID, True)
 
 def chatlang_parse(tokens):
-    ast_parser = parser()
+    ast_parser = All(statements())
     #import pdb; pdb.set_trace();
     ast = ast_parser(list(tokens), 0)
     return ast
-
-def parser():
-    return All(statements())
 
 def statements():
     separator = Process(Tag(";"), lambda: CompoundStatement)
