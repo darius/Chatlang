@@ -2,18 +2,18 @@ class ArithmeticExp:
     pass
 
 class IntExp(ArithmeticExp):
-    def __init__(self, i):
-        self.i = i
+    def __init__(self, value):
+        self.value = value
 
     def eval(self, env):
-        return self.i
+        return self.value
 
 class VarExp(ArithmeticExp):
-    def __init__(self, x):
-        self.x = x
+    def __init__(self, name):
+        self.name = name
 
     def eval(self, env):
-        return env.get(self.x, 0)
+        return env.get(self.name, 0)
 
 class BinopExp(ArithmeticExp):
     def __init__(self, op, left, right):
